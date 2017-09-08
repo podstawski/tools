@@ -31,10 +31,13 @@
 
     $exif=false;
     if (isset($_GET['exif'])) {
+        file_put_contents(__DIR__.'/log.txt',date('Y-m-d H:i:s|').$_GET['exif']."\n",FILE_APPEND);
         $cache=__DIR__.'/cache/'.md5($_GET['exif']);
         if (!file_exists($cache)) {
             if (strtolower(substr($_GET['exif'],0,5))=='gs://') {
-                system('gsutil cp '.$_GET['exif'].' '.$cache.' >dev/null 2>/dev/null');    
+                $cmd='gsutil cp '.$_GET['exif'].' '.$cache;
+                system($cmd);
+        
             } else {
                 $blob=file_get_contents($_GET['exif']);
                 if ($blob) file_put_contents($cache,$blob);
